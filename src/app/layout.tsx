@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Header from "@/component/Header";
+import Footer from "@/component/Footer";
+import Navbar from "@/component/Navbar";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import localFont from "next/font/local";
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const iranSans = localFont({
+  src: "/fonts/Vazir-Bold.ttf",
+  variable: "--font-vazir",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -23,11 +23,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang="fa" dir="rtl" className={iranSans.variable}>
+      <body className="font-iran-sans">
+        <Header />
+        <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );
