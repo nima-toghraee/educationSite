@@ -9,39 +9,35 @@ type Article = {
   summary: string;
 };
 
-const articles: Article[] = [
+const mindsetArticles: Article[] = [
   {
-    id: "learn-react",
-    title: "یادگیری React به زبان ساده",
-    summary: "مقدمه‌ای بر React و مفاهیم پایه آن...",
+    id: "mind-habits",
+    title: "عادات ذهنی قدرتمند",
+    summary: "چطور ذهن خود را برای موفقیت آماده کنیم...",
   },
   {
-    id: "nextjs-guide",
-    title: "راهنمای کامل Next.js",
-    summary: "آموزش جامع نکست جی اس و قابلیت‌های آن...",
+    id: "stress-control",
+    title: "کنترل استرس در نوجوانان",
+    summary: "توانمندسازی ذهن برای شرایط استرس‌زا...",
   },
 ];
 
-export default function ArticlesPage() {
+export default function MindsetArticlesPage() {
   return (
     <main className="container mx-auto px-4 py-8">
-      {/* Page Title */}
       <h1 className="text-2xl md:text-3xl font-extrabold mb-8 text-gray-900 text-center">
-        مقالات آموزشی
+        مقالات توانمندی ذهن
       </h1>
 
-      {/* Responsive Grid for Articles */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {articles.map((article, index) => (
+        {mindsetArticles.map((article, index) => (
           <motion.div
             key={article.id}
-            // animation for staggered fade-in
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.15, duration: 0.4 }}
             className="bg-white border rounded-2xl p-5 shadow-sm hover:shadow-lg hover:border-blue-500 transition-all duration-300"
           >
-            {/* Article Title */}
             <Link
               href={`/articles/${article.id}`}
               className="text-lg md:text-xl font-semibold text-gray-800 hover:text-blue-600 transition-colors"
@@ -49,12 +45,10 @@ export default function ArticlesPage() {
               {article.title}
             </Link>
 
-            {/* Summary */}
             <p className="mt-2 text-gray-600 text-sm md:text-base line-clamp-2">
               {article.summary}
             </p>
 
-            {/* Call to action */}
             <Link
               href={`/articles/${article.id}`}
               className="mt-3 inline-block text-blue-600 text-sm font-medium"

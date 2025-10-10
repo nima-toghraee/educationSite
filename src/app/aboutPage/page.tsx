@@ -2,19 +2,18 @@ import Image from "next/image";
 
 export default function AboutPage() {
   return (
-    <section className="bg-gray-50 min-h-screen flex items-center justify-center px-4">
+    <section className="bg-gray-50 min-h-screen flex items-center justify-center px-4 bg-gradient-to-r from-blue-50 via-white to-purple-50 py-20">
       <div className="max-w-5xl w-full bg-white rounded-3xl shadow-lg overflow-hidden grid md:grid-cols-2">
         {/* بخش تصویر */}
         <div className="relative h-80 md:h-auto">
           <Image
-            src="/images/about-me.jpg" // اینجا عکس خودت رو بذار تو public/images
+            src="/images/about-me.jpg"
             alt="عکس دکتر موسوی"
             fill
             className="object-cover"
           />
         </div>
 
-        {/* بخش متن */}
         <div className="p-8 flex flex-col justify-center">
           <h1 className="text-3xl font-extrabold text-gray-900 mb-4">
             درباره من
@@ -41,7 +40,6 @@ export default function AboutPage() {
             </span>
           </p>
 
-          {/* دکمه‌ها */}
           <div className="flex gap-3 flex-wrap">
             <a
               href="/consultation"

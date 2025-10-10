@@ -1,3 +1,4 @@
+import FreeVideoCarousel from "@/component/FreeVideoCarousel";
 import Hero from "@/component/Hero";
 import VideoGrid from "@/component/VideoGrid";
 
@@ -7,19 +8,19 @@ export default async function Home() {
       id: "abc123",
       category: "study-skills",
       title: "چطور با تمرکز بیشتر مطالعه کنیم؟",
-      thumbnail: "/videos/thumbnail1.jpg",
+      thumbnail: "/home5.jpg",
     },
     {
       id: "xyz456",
       category: "mindset",
       title: "۵ تکنیک برای کاهش استرس کنکور",
-      thumbnail: "/videos/thumbnail2.jpg",
+      thumbnail: "/home3.jpg",
     },
     {
       id: "efg789",
       category: "planning",
       title: "برنامه‌ریزی روزانه برای دانش‌آموزان",
-      thumbnail: "/videos/thumbnail3.jpg",
+      thumbnail: "/home2.jpg",
     },
   ];
   return (
@@ -27,15 +28,8 @@ export default async function Home() {
       {/* Hero Section */}
       <Hero />
 
-      {/* Categories */}
-      {/* <section className="container mx-auto px-4 py-12">
-        <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">
-          دسته‌بندی‌ها
-        </h2>
-        <Categories categories={categories} />
-      </section> */}
-
       <VideoGrid videos={sampleVideos} />
+      <FreeVideoCarousel />
     </div>
   );
 }

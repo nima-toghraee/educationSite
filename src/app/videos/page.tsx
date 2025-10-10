@@ -1,26 +1,36 @@
-import Link from "next/link";
+"use client";
 
-const categories = [
-  { id: "react", name: "React آموزش" },
-  { id: "nextjs", name: "Next.js آموزش" },
-];
+import { useEffect, useState } from "react";
+import { getCourses } from "@/lib/api";
+import CourseCard from "@/component/CourseCard";
 
-export default function VideosCategories() {
+export default function VideosPage() {
+  const [courses, setCourses] = useState<any[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await getCourses();
+        setCourses(data);
+      } catch (error) {
+        console.error("❌ خطا در دریافت کورس‌ها:", error);
+      }
+    })();
+  }, []);
+
   return (
-    <main className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">موضوعات ویدیوهای آموزشی</h1>
-      <ul className="space-y-4">
-        {categories.map((cat) => (
-          <li key={cat.id}>
-            <Link
-              href={`/videos/${cat.id}`}
-              className="text-blue-600 hover:underline text-xl"
-            >
-              {cat.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </main>
+    <section className="bg-gradient-to-r from-blue-50 via-white to-purple-50 py-20">
+      <main className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl md:text-4xl font-extrabold mb-8 text-gray-900 text-center">
+          موضوعات ویدیوهای آموزشی
+        </h1>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {courses.map((course) => (
+            <CourseCard key={course.id} course={course} />
+          ))}
+        </div>
+      </main>
+    </section>
   );
 }

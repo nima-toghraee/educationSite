@@ -1,63 +1,44 @@
-import Link from "next/link";
-
-type Video = {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-};
-
-const videos: Video[] = [
-  {
-    id: "vid1",
-    category: "react",
-    title: "React جلسه 1",
-    description: "مقدمه React",
-  },
-  {
-    id: "vid2",
-    category: "react",
-    title: "React جلسه 2",
-    description: "کامپوننت‌ها",
-  },
-  {
-    id: "vid3",
-    category: "nextjs",
-    title: "Next.js جلسه 1",
-    description: "مقدمه Next.js",
-  },
-  {
-    id: "vid4",
-    category: "nextjs",
-    title: "Next.js جلسه 2",
-    description: "مسیردهی داینامیک",
-  },
-];
+"use client";
+import { useEffect, useState } from "react";
+import { fetchCoursesByCategory } from "@/lib/apiCourses";
+import CoursesCard from "@/component/coursesCard";
 
 type Props = {
   params: { category: string };
 };
 
 export default function CategoryVideos({ params }: Props) {
-  const filtered = videos.filter((v) => v.category === params.category);
+  const [courses, setCourses] = useState<any[]>([]);
+
+  useEffect(() => {
+    const loadCourses = async () => {
+      const filtered = await fetchCoursesByCategory(params.category);
+      setCourses(filtered);
+    };
+    loadCourses();
+  }, [params.category]);
 
   return (
-    <main className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">
+    <main className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl md:text-3xl font-extrabold mb-8 text-gray-900 text-center">
         ویدیوهای آموزشی: {params.category}
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {filtered.map((video) => (
-          <Link
-            href={`/videos/${params.category}/${video.id}`}
-            key={video.id}
-            className="block border rounded p-4 shadow hover:shadow-lg transition"
-          >
-            <h2 className="text-xl font-semibold">{video.title}</h2>
-            <p className="mt-2 text-gray-600">{video.description}</p>
-          </Link>
-        ))}
-      </div>
+
+      {courses.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {courses.map((course) => (
+            <CoursesCard
+              key={course.id}
+              course={course}
+              category={params.category}
+            />
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-gray-500 mt-10">
+          هیچ ویدیویی در این دسته‌بندی موجود نیست.
+        </p>
+      )}
     </main>
   );
 }

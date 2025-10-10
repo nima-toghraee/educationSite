@@ -6,6 +6,7 @@ import {
   FaTwitter,
   FaInstagram,
   FaLinkedinIn,
+  FaTelegramPlane,
 } from "react-icons/fa";
 import Link from "next/link";
 
@@ -71,38 +72,29 @@ function Footer() {
             <p className="text-sm mb-4">
               آدرس: تهران، خیابان ولیعصر
               <br />
-              تلفن: 09136281348
+              تلفن: 09029994349
               <br />
-              ایمیل: toghraeen@gmail.com
+              ایمیل: mousavi.physics@yahoo.com
             </p>
+
             <div className="flex space-x-4">
               <a
-                href="#"
-                aria-label="Facebook"
+                href="https://t.me/course_of_physics899496"
+                aria-label="Telegram"
                 className="hover:text-white transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                <FaFacebookF size={20} />
+                <FaTelegramPlane size={20} />
               </a>
               <a
-                href="#"
-                aria-label="Twitter"
-                className="hover:text-white transition-colors"
-              >
-                <FaTwitter size={20} />
-              </a>
-              <a
-                href="#"
+                href="https://instagram.com/username"
                 aria-label="Instagram"
                 className="hover:text-white transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 <FaInstagram size={20} />
-              </a>
-              <a
-                href="#"
-                aria-label="LinkedIn"
-                className="hover:text-white transition-colors"
-              >
-                <FaLinkedinIn size={20} />
               </a>
             </div>
           </div>
