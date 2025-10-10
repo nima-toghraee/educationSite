@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useLesson } from "@/hooks/useLesson";
 import LessonVideoPlayer from "@/component/LessonVideoPlayer";
-import CommentsSection from "@/component/CommentSection";
+import CommentsSection from "@/component/comments/CommentSection";
 
 export default function LessonDetailPage() {
   const { category, courseId, lessonId } = useParams();
@@ -32,7 +32,7 @@ export default function LessonDetailPage() {
         <p className="text-sm text-gray-500">⏱ مدت زمان: {lesson.duration}</p>
       )}
 
-      <CommentsSection />
+      <CommentsSection videoId={lessonId} />
     </main>
   );
 }
