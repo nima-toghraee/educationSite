@@ -15,7 +15,9 @@ export default function FreeVideoCarousel() {
   useEffect(() => {
     async function fetchVideos() {
       try {
-        const res = await fetch("http://localhost:5000/api/courses/free/top");
+        const res = await fetch(
+          "https://backendeducation-production-6623.up.railway.app/api/courses/free/top"
+        );
         const data = await res.json();
         const topVideos = data.slice(0, 5);
         setVideos(topVideos);

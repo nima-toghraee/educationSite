@@ -9,7 +9,7 @@ export function useFreeCourses() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/courses/free"); // آدرس بک‌اند
+        const res = await fetch("https://backendeducation-production-6623.up.railway.app/api/courses/free"); // آدرس بک‌اند
         if (!res.ok) throw new Error("Failed to fetch courses");
         const data: Course[] = await res.json();
         setCourses(data);

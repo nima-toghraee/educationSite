@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/consultation";
+const API_URL = "https://backendeducation-production-6623.up.railway.app/api/consultation";
 
 export interface ConsultationRequest {
   name: string;

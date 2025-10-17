@@ -37,7 +37,7 @@ export default function ArticlesCategoryPage({ params }: Props) {
     setError(null);
 
     fetch(
-      `http://localhost:5000/api/articles?category=${encodeURIComponent(
+      `https://backendeducation-production-6623.up.railway.app/api/articles?category=${encodeURIComponent(
         categoryInDb
       )}`
     )

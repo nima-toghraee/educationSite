@@ -22,7 +22,9 @@ export default function CategoryCards() {
   useEffect(() => {
     async function fetchCourses() {
       try {
-        const res = await fetch("http://localhost:5000/api/courses");
+        const res = await fetch(
+          "https://backendeducation-production-6623.up.railway.app/api/courses"
+        );
         const data: Course[] = await res.json();
 
         // استخراج دسته‌بندی‌ها و شمارش تعداد کورس‌ها

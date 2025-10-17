@@ -26,7 +26,9 @@ export default function ArticleDetailPage({ params }: Props) {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:5000/api/articles/${params.id}`)
+    fetch(
+      `https://backendeducation-production-6623.up.railway.app/api/articles/${params.id}`
+    )
       .then((res) => res.json())
       .then((data) => {
         setArticle(data);

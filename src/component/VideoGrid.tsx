@@ -19,7 +19,7 @@ export default function VideoGrid() {
     async function fetchVideos() {
       try {
         const res = await fetch(
-          "http://localhost:5000/api/courses/latest?limit=3"
+          "https://backendeducation-production-6623.up.railway.app/api/courses/latest?limit=3"
         );
         const data = await res.json();
         setVideos(data);
