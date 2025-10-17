@@ -15,6 +15,7 @@ export default function LessonDetailPage() {
   const { lesson, loading } = useLesson(lessonId as string);
 
   if (loading) return <p className="text-center mt-20">در حال بارگذاری...</p>;
+
   if (!lesson)
     return <p className="text-center mt-20 text-gray-500">لسن یافت نشد.</p>;
 
@@ -36,7 +37,8 @@ export default function LessonDetailPage() {
         <p className="text-sm text-gray-500">⏱ مدت زمان: {lesson.duration}</p>
       )}
 
-      <CommentsSection videoId={lessonId} />
+      {/* حل مشکل TypeScript با شرط رندر */}
+      {lessonId && <CommentsSection videoId={lessonId} />}
     </main>
   );
 }
