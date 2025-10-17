@@ -48,7 +48,7 @@ export default function AboutPage() {
               🎯 رزرو جلسه رایگان کوچینگ
             </a>
             <a
-              href="/videos"
+              href="/videos/free"
               className="px-6 py-3 border border-green-600 text-green-600 rounded-xl hover:bg-green-50 transition-colors"
             >
               🎥 دیدن ویدیوهای رایگان

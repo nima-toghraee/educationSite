@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/component/Header";
 import Footer from "@/component/Footer";
-import Navbar from "@/component/Navbar";
+import Navbar from "@/component/navbar/Navbar";
 
 import localFont from "next/font/local";
 
