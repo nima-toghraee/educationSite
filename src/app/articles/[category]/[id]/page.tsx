@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
-// تعریف نوع Article مطابق با دیتابیس/API
 interface Article {
   id: number;
   title: string;
@@ -14,24 +14,24 @@ interface Article {
   view_count: number;
 }
 
-// تایپ Props مستقیم در آرگومان تابع
-export default function ArticleDetailPage({
-  params,
-}: {
-  params: { category: string; id: string };
-}) {
+export default function ArticleDetailPage() {
+  const params = useParams(); // می‌گیریم پارام‌ها رو از hook
+  const articleId = params?.id;
+
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!articleId) return;
+
     const fetchArticle = async () => {
       setLoading(true);
       setError(null);
 
       try {
         const res = await fetch(
-          `https://backendeducation-production-6623.up.railway.app/api/articles/${params.id}`
+          `https://backendeducation-production-6623.up.railway.app/api/articles/${articleId}`
         );
         if (!res.ok) throw new Error("خطا در دریافت مقاله");
         const data: Article = await res.json();
@@ -46,7 +46,7 @@ export default function ArticleDetailPage({
     };
 
     fetchArticle();
-  }, [params.id]);
+  }, [articleId]);
 
   if (loading)
     return <div className="text-center py-20">در حال بارگذاری...</div>;
