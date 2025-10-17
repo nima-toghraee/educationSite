@@ -2,6 +2,7 @@
 
 import ArticleGrid from "@/component/ArticleGrid";
 import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 
 interface Article {
   id: number;
@@ -18,48 +19,49 @@ const categoryMap: Record<string, string> = {
   mindset: "توانمندی ذهن",
 };
 
-interface Props {
-  params: {
-    category: string; // انگلیسی از URL
-  };
-}
+export default function ArticlesCategoryPage() {
+  const params = useParams();
+  const category = params?.category;
 
-export default function ArticlesCategoryPage({ params }: Props) {
   const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { category } = params;
-  const categoryInDb = categoryMap[category] || category; // نام دسته‌بندی برای API
+  const categoryInDb = categoryMap[category as string] || category; // نام دسته‌بندی برای API
 
   useEffect(() => {
+    if (!category) return;
+
     setLoading(true);
     setError(null);
 
-    fetch(
-      `https://backendeducation-production-6623.up.railway.app/api/articles?category=${encodeURIComponent(
-        categoryInDb
-      )}`
-    )
-      .then((res) => {
+    const fetchArticles = async () => {
+      try {
+        const res = await fetch(
+          `https://backendeducation-production-6623.up.railway.app/api/articles?category=${encodeURIComponent(
+            categoryInDb as string
+          )}`
+        );
         if (!res.ok) throw new Error("خطا در دریافت داده‌ها");
-        return res.json();
-      })
-      .then((data) => {
+        const data: Article[] = await res.json();
         setArticles(data);
-        setLoading(false);
-      })
-      .catch((err) => {
+      } catch (err: unknown) {
         console.error(err);
-        setError("مشکلی در بارگذاری مقالات رخ داد.");
+        if (err instanceof Error) setError(err.message);
+        else setError("مشکلی در بارگذاری مقالات رخ داد.");
+        setArticles([]);
+      } finally {
         setLoading(false);
-      });
-  }, [categoryInDb]);
+      }
+    };
+
+    fetchArticles();
+  }, [category, categoryInDb]);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
       <h1 className="text-2xl font-bold mb-6">
-        مقالات {categoryMap[category] || category}
+        مقالات {categoryMap[category as string] || category}
       </h1>
 
       {loading && <p>در حال بارگذاری...</p>}
