@@ -30,7 +30,7 @@ export default async function Home() {
       <Hero />
 
       <CategoryCards />
-      <VideoGrid videos={sampleVideos} />
+      <VideoGrid />
       <FreeVideoCarousel />
     </div>
   );
