@@ -1,5 +1,5 @@
+import { Course } from "@/type/course";
 import { useEffect, useState } from "react";
-import { Course } from "@/types/course";
 
 export function useFreeCourses() {
   const [courses, setCourses] = useState<Course[]>([]);

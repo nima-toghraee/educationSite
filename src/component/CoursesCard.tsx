@@ -1,7 +1,8 @@
+import { Course } from "@/type/course";
 import Link from "next/link";
 
 type Props = {
-  course: any;
+  course: Course;
   category: string;
 };
 

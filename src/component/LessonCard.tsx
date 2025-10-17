@@ -1,7 +1,8 @@
+import { Lesson } from "@/type/lesson";
 import Link from "next/link";
 
 type Props = {
-  lesson: any;
+  lesson: Lesson;
   category: string;
   courseId: number;
 };

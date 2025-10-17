@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { fetchCoursesByCategory } from "@/lib/apiCourses";
 import CoursesCard from "@/component/CoursesCard";
+import { Course } from "@/type/course";
 
 type Props = {
   params: { category: string };
@@ -15,13 +16,13 @@ const categoryMap: Record<string, string> = {
 };
 
 export default function CategoryVideos({ params }: Props) {
-  const [courses, setCourses] = useState<any[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadCourses = async () => {
       setLoading(true);
-      const filtered = await fetchCoursesByCategory(params.category);
+      const filtered: Course[] = await fetchCoursesByCategory(params.category);
       setCourses(filtered);
       setLoading(false);
     };
