@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function AboutPage() {
   return (
@@ -41,18 +42,19 @@ export default function AboutPage() {
           </p>
 
           <div className="flex gap-3 flex-wrap">
-            <a
+            <Link
               href="/consultation"
               className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-md transition-transform transform hover:scale-105"
             >
               🎯 رزرو جلسه رایگان کوچینگ
-            </a>
-            <a
+            </Link>
+
+            <Link
               href="/videos/free"
               className="px-6 py-3 border border-green-600 text-green-600 rounded-xl hover:bg-green-50 transition-colors"
             >
               🎥 دیدن ویدیوهای رایگان
-            </a>
+            </Link>
           </div>
         </div>
       </div>

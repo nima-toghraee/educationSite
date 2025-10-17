@@ -5,13 +5,15 @@ import { useParams } from "next/navigation";
 import { fetchCourseById, fetchLessonsByCourse } from "@/lib/apiLessons";
 import CourseHeader from "@/component/CourseHeader";
 import LessonCard from "@/component/LessonCard";
+import { Course } from "@/type/course";
+import { Lesson } from "@/type/lesson";
 
 export default function CourseLessonsPage() {
   const params = useParams();
   const { category, courseId } = params;
 
-  const [course, setCourse] = useState<any>(null);
-  const [lessons, setLessons] = useState<any[]>([]);
+  const [course, setCourse] = useState<Course | null>(null);
+  const [lessons, setLessons] = useState<Lesson[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
