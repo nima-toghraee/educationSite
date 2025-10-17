@@ -1,35 +1,40 @@
 "use client";
+
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { fetchCoursesByCategory } from "@/lib/apiCourses";
 import CoursesCard from "@/component/CoursesCard";
 import { Course } from "@/type/course";
 
-type Props = {
-  params: { category: string };
-};
-
-// مپ انگلیسی به فارسی برای نمایش در عنوان
 const categoryMap: Record<string, string> = {
   math: "ریاضی",
   physics: "فیزیک",
   mindset: "توانمندی ذهن",
 };
 
-export default function CategoryVideos({ params }: Props) {
+export default function CategoryVideos() {
+  const params = useParams();
+  const category = params?.category;
+
   const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const faCategory = categoryMap[category as string] || category;
 
   useEffect(() => {
+    if (!category) return;
+
     const loadCourses = async () => {
       setLoading(true);
-      const filtered: Course[] = await fetchCoursesByCategory(params.category);
+      const filtered: Course[] = await fetchCoursesByCategory(
+        category as string
+      );
       setCourses(filtered);
       setLoading(false);
     };
-    loadCourses();
-  }, [params.category]);
 
-  const faCategory = categoryMap[params.category] || params.category;
+    loadCourses();
+  }, [category]);
 
   return (
     <main className="container mx-auto px-4 py-8">
@@ -45,7 +50,7 @@ export default function CategoryVideos({ params }: Props) {
             <CoursesCard
               key={course.id}
               course={course}
-              category={params.category}
+              category={category as string}
             />
           ))}
         </div>

@@ -10,18 +10,21 @@ import { Lesson } from "@/type/lesson";
 
 export default function CourseLessonsPage() {
   const params = useParams();
-  const { category, courseId } = params;
+  const category = params?.category;
+  const courseId = params?.courseId;
 
   const [course, setCourse] = useState<Course | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    if (!courseId) return;
+
     const loadData = async () => {
       try {
         const [courseData, lessonsData] = await Promise.all([
-          fetchCourseById(courseId as string),
-          fetchLessonsByCourse(courseId as string),
+          fetchCourseById(courseId),
+          fetchLessonsByCourse(courseId),
         ]);
         setCourse(courseData);
         setLessons(lessonsData);

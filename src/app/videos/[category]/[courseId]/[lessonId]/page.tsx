@@ -7,7 +7,11 @@ import LessonVideoPlayer from "@/component/LessonVideoPlayer";
 import CommentsSection from "@/component/comments/CommentSection";
 
 export default function LessonDetailPage() {
-  const { category, courseId, lessonId } = useParams();
+  const params = useParams();
+  const category = params?.category;
+  const courseId = params?.courseId;
+  const lessonId = params?.lessonId;
+
   const { lesson, loading } = useLesson(lessonId as string);
 
   if (loading) return <p className="text-center mt-20">در حال بارگذاری...</p>;
