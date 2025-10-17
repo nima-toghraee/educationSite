@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Course } from "@/types/course";
-import CoursesCard from "./coursesCard";
+import CoursesCard from "./CoursesCard";
 
 interface CategorySectionProps {
   name: string;

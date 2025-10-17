@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { fetchCoursesByCategory } from "@/lib/apiCourses";
-import CoursesCard from "@/component/coursesCard";
+import CoursesCard from "@/component/CoursesCard";
 
 type Props = {
   params: { category: string };
