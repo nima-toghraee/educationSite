@@ -1,4 +1,3 @@
-import ArticlesSection from "@/component/articles/ArticlesSection";
 import CategoryCards from "@/component/CategoryCard";
 import FreeVideoCarousel from "@/component/FreeVideoCarousel/FreeVideoCarousel";
 import Hero from "@/component/Hero";
