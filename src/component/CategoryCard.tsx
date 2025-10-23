@@ -10,9 +10,16 @@ interface Course {
   title: string;
 }
 
+// نگاشت دسته‌بندی انگلیسی ↔ فارسی
+const categoryMap: Record<string, string> = {
+  math: "ریاضی",
+  physics: "فیزیک",
+  mindset: "توانمندی ذهن",
+};
+
 interface Category {
-  name: string;
-  slug: string;
+  slug: string; // انگلیسی برای URL
+  name: string; // فارسی برای نمایش
   count: number;
 }
 
@@ -26,19 +33,21 @@ export default function CategoryCards() {
           "https://backend-education-x5ta.onrender.com/api/courses"
         );
         const json = await res.json();
-
-        // بررسی اینکه json یک آرایه است یا خیر
         const data: Course[] = Array.isArray(json) ? json : json.data || [];
 
         const counts: Record<string, number> = {};
         data.forEach((course) => {
-          const slug = course.category.toLowerCase();
+          // نگاشت به انگلیسی برای slug
+          const slug =
+            Object.keys(categoryMap).find(
+              (key) => categoryMap[key] === course.category
+            ) || course.category.toLowerCase();
           counts[slug] = (counts[slug] || 0) + 1;
         });
 
         const cats: Category[] = Object.keys(counts).map((slug) => ({
           slug,
-          name: slug.charAt(0).toUpperCase() + slug.slice(1),
+          name: categoryMap[slug] || slug, // نمایش فارسی
           count: counts[slug],
         }));
 

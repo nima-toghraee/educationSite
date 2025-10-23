@@ -53,12 +53,6 @@ export default function Hero() {
                 >
                   مشاوره رایگان
                 </Link>
-                <Link
-                  href="/articles"
-                  className="px-8 py-3 border border-gray-300 text-gray-800 rounded-2xl hover:bg-gray-100 transition"
-                >
-                  مقالات آموزشی
-                </Link>
               </>
             )}
           </div>

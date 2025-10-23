@@ -1,16 +1,11 @@
 import api from "@/lib/api"; // یا استفاده مستقیم از fetch
-import { Course } from "@/types/course";
 
-// تعریف ساختار داده برای نمایش در ناوبر
-interface DynamicNavItem {
-  label: string;
-  href: string;
-}
+
 
 
 export async function fetchCoursesByCategory(category: string) {
   try {
-    const res = await api.get(`/courses?category=${category}`);
+    const res = await api.get(`/courses?category=${encodeURIComponent(category)}`);
     
     return Array.isArray(res.data) ? res.data : [];
   } catch (error) {
