@@ -20,7 +20,12 @@ export default function CategoryVideos() {
   const [loading, setLoading] = useState<boolean>(true);
 
   // مقدار فارسی برای API
-  const apiCategory = categorySlug ? categoryMap[categorySlug] : "";
+  function getApiCategory(slug?: string): string {
+    if (!slug) return "";
+    return categoryMap[slug as keyof typeof categoryMap] || "";
+  }
+
+  const apiCategory = getApiCategory(categorySlug);
 
   useEffect(() => {
     if (!categorySlug || !apiCategory) {
