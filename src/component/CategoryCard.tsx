@@ -25,19 +25,20 @@ export default function CategoryCards() {
         const res = await fetch(
           "https://backendeducation-production-6623.up.railway.app/api/courses"
         );
-        const data: Course[] = await res.json();
+        const json = await res.json();
 
-        // استخراج دسته‌بندی‌ها و شمارش تعداد کورس‌ها
+        // بررسی اینکه json یک آرایه است یا خیر
+        const data: Course[] = Array.isArray(json) ? json : json.data || [];
+
         const counts: Record<string, number> = {};
         data.forEach((course) => {
           const slug = course.category.toLowerCase();
           counts[slug] = (counts[slug] || 0) + 1;
         });
 
-        // تبدیل به آرایه Category
         const cats: Category[] = Object.keys(counts).map((slug) => ({
           slug,
-          name: slug.charAt(0).toUpperCase() + slug.slice(1), // اسم با حرف اول بزرگ
+          name: slug.charAt(0).toUpperCase() + slug.slice(1),
           count: counts[slug],
         }));
 

@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Course } from "@/types/course";
 import CoursesCard from "./CoursesCard";
+import { Course } from "@/type/course";
 
 interface CategorySectionProps {
   name: string;

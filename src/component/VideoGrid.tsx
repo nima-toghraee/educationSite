@@ -21,7 +21,11 @@ export default function VideoGrid() {
         const res = await fetch(
           "https://backendeducation-production-6623.up.railway.app/api/courses/latest?limit=3"
         );
-        const data = await res.json();
+        const json = await res.json();
+
+        // اطمینان از اینکه داده آرایه است
+        const data: Video[] = Array.isArray(json) ? json : json.data || [];
+
         setVideos(data);
       } catch (err) {
         console.error("خطا در دریافت ویدیوها:", err);
@@ -35,7 +39,7 @@ export default function VideoGrid() {
 
   return (
     <section className="bg-gradient-to-r from-blue-50 via-white to-purple-50 py-20">
-      <div className="px-4 py-8 max-w-6xl mx-auto ">
+      <div className="px-4 py-8 max-w-6xl mx-auto">
         <h2 className="text-2xl font-bold text-center mb-8">
           🎥 آخرین ویدیوها
         </h2>
@@ -46,7 +50,7 @@ export default function VideoGrid() {
                 <div
                   key={i}
                   className="bg-gray-200 animate-pulse rounded-2xl h-48"
-                ></div>
+                />
               ))
             : videos.map((video) => (
                 <Link

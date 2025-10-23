@@ -18,7 +18,11 @@ export default function FreeVideoCarousel() {
         const res = await fetch(
           "https://backendeducation-production-6623.up.railway.app/api/courses/free/top"
         );
-        const data = await res.json();
+        const json = await res.json();
+
+        // بررسی اینکه json آرایه هست یا داخل data هست
+        const data: Video[] = Array.isArray(json) ? json : json.data || [];
+
         const topVideos = data.slice(0, 5);
         setVideos(topVideos);
 
@@ -87,7 +91,6 @@ export default function FreeVideoCarousel() {
           />
 
           {/* دکمه بعدی */}
-
           <div className="absolute left-0 z-10">
             <button
               onClick={() => {
