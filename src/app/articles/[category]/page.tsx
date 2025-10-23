@@ -38,7 +38,7 @@ export default function ArticlesCategoryPage() {
     const fetchArticles = async () => {
       try {
         const res = await fetch(
-          `https://backendeducation-production-6623.up.railway.app/api/articles?category=${encodeURIComponent(
+          `https://backend-education-x5ta.onrender.com/api/articles?category=${encodeURIComponent(
             categoryInDb as string
           )}`
         );

@@ -16,7 +16,7 @@ export default function FreeVideoCarousel() {
     async function fetchVideos() {
       try {
         const res = await fetch(
-          "https://backendeducation-production-6623.up.railway.app/api/courses/free/top"
+          "https://backend-education-x5ta.onrender.com/api/courses/free/top"
         );
         const json = await res.json();
 

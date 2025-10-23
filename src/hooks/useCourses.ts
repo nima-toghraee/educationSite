@@ -10,7 +10,7 @@ export function useFreeCourses() {
     const fetchCourses = async () => {
       try {
         const res = await fetch(
-          "https://backendeducation-production-6623.up.railway.app/api/courses/free"
+          "https://backend-education-x5ta.onrender.com/api/courses/free"
         );
         if (!res.ok) throw new Error("Failed to fetch courses");
         const data: Course[] = await res.json();

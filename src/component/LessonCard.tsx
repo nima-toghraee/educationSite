@@ -1,4 +1,4 @@
-import { Lesson } from "@/type/lesson";
+import { Lesson } from "@/types/lesson";
 import Link from "next/link";
 
 type Props = {

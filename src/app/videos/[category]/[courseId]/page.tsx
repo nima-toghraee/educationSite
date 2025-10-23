@@ -5,13 +5,16 @@ import { useParams } from "next/navigation";
 import { fetchCourseById, fetchLessonsByCourse } from "@/lib/apiLessons";
 import CourseHeader from "@/component/CourseHeader";
 import LessonCard from "@/component/LessonCard";
-import { Course } from "@/type/course";
-import { Lesson } from "@/type/lesson";
+import { Course } from "@/types/course";
+import { Lesson } from "@/types/lesson";
 
 export default function CourseLessonsPage() {
   const params = useParams();
   const category = params?.category;
-  const courseId = params?.courseId;
+
+  // ⚡ اطمینان از اینکه courseId همیشه یک رشته است
+  const rawCourseId = params?.courseId;
+  const courseId = Array.isArray(rawCourseId) ? rawCourseId[0] : rawCourseId;
 
   const [course, setCourse] = useState<Course | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -57,7 +60,7 @@ export default function CourseLessonsPage() {
           ))
         ) : (
           <p className="text-gray-500 col-span-full text-center">
-            هنوز هیچ لسن‌ای در این کورس اضافه نشده است.
+            هنوز هیچ درسی در این کورس اضافه نشده است.
           </p>
         )}
       </div>

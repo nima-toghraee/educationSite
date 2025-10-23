@@ -1,4 +1,4 @@
-import { Course } from "@/type/course";
+import { Course } from "@/types/course";
 import Link from "next/link";
 
 type Props = {

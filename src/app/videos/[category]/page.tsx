@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { fetchCoursesByCategory } from "@/lib/apiCourses";
 import CoursesCard from "@/component/CoursesCard";
-import { Course } from "@/type/course";
+import { Course } from "@/types/course";
 
+// نگاشت دسته‌بندی‌های انگلیسی به فارسی
 const categoryMap: Record<string, string> = {
   math: "ریاضی",
   physics: "فیزیک",
@@ -14,27 +15,41 @@ const categoryMap: Record<string, string> = {
 
 export default function CategoryVideos() {
   const params = useParams();
-  const category = params?.category;
-
+  const category = params?.category; // مقدار انگلیسی از URL
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  // دسته‌بندی به صورت فارسی برای API
   const faCategory = categoryMap[category as string] || category;
 
   useEffect(() => {
-    if (!category) return;
+    if (!category) {
+      console.error("!!! ERROR: Category parameter is missing from URL !!!");
+      return;
+    }
+
+    if (!faCategory) return;
 
     const loadCourses = async () => {
       setLoading(true);
+
+      // ارسال مقدار فارسی به API
       const filtered: Course[] = await fetchCoursesByCategory(
-        category as string
+        faCategory as string
       );
       setCourses(filtered);
+
+      if (filtered.length === 0) {
+        console.warn("⚠️ هیچ دوره‌ای برای این دسته‌بندی پیدا نشد:", faCategory);
+      } else {
+        console.log(`✅ تعداد دوره‌های دریافت شده: ${filtered.length}`);
+      }
+
       setLoading(false);
     };
 
     loadCourses();
-  }, [category]);
+  }, [category, faCategory]);
 
   return (
     <main className="container mx-auto px-4 py-8">

@@ -12,7 +12,6 @@ export default function LessonDetailPage() {
   const courseId = params?.courseId;
   const lessonIdParam = params?.lessonId;
 
-  // اگر lessonId آرایه باشه، اولین عنصرش رو استفاده می‌کنیم
   const lessonId =
     typeof lessonIdParam === "string"
       ? lessonIdParam

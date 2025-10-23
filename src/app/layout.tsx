@@ -1,9 +1,9 @@
+// src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "@/component/Header";
 import Footer from "@/component/Footer";
 import Navbar from "@/component/navbar/Navbar";
-
+import HeaderClient from "@/component/HeaderClient"; // Client Component
 import localFont from "next/font/local";
 
 const iranSans = localFont({
@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl" className={iranSans.variable}>
       <body className="font-iran-sans">
-        <Header />
+        <HeaderClient />
         <Navbar />
         {children}
         <Footer />

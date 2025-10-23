@@ -15,7 +15,11 @@ export default function FreeCoursesPage() {
         🎓 دوره‌های رایگان
       </h1>
 
-      <CategorySection name="دوره‌های رایگان" courses={courses} />
+      <CategorySection
+        name="دوره‌های رایگان"
+        courses={courses}
+        category="free"
+      />
     </main>
   );
 }

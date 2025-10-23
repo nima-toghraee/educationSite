@@ -31,7 +31,7 @@ export default function ArticleDetailPage() {
 
       try {
         const res = await fetch(
-          `https://backendeducation-production-6623.up.railway.app/api/articles/${articleId}`
+          `https://backend-education-x5ta.onrender.com/api/articles/${articleId}`
         );
         if (!res.ok) throw new Error("خطا در دریافت مقاله");
         const data: Article = await res.json();

@@ -97,7 +97,7 @@ export default function ConsultationForm({ onSuccess }: ConsultationFormProps) {
       <FormInput
         label="ایمیل"
         name="email"
-        value={formData.email}
+        value={formData.email || ""}
         onChange={handleChange}
         placeholder="email@example.com"
         type="email"
@@ -105,7 +105,7 @@ export default function ConsultationForm({ onSuccess }: ConsultationFormProps) {
       <FormInput
         label="توضیحات"
         name="description"
-        value={formData.description}
+        value={formData.description || ""}
         onChange={handleChange}
         placeholder="هر سوال یا توضیحی داری اینجا بنویس..."
         textarea

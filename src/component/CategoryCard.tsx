@@ -23,7 +23,7 @@ export default function CategoryCards() {
     async function fetchCourses() {
       try {
         const res = await fetch(
-          "https://backendeducation-production-6623.up.railway.app/api/courses"
+          "https://backend-education-x5ta.onrender.com/api/courses"
         );
         const json = await res.json();
 

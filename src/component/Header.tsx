@@ -26,9 +26,9 @@ function Header() {
         </Link>
 
         {/* Search bar (desktop) */}
-        <div className="hidden md:block flex-1 mx-4">
+        {/* <div className="hidden md:block flex-1 mx-4">
           <SearchInput />
-        </div>
+        </div> */}
 
         {/* Navigation & Icons */}
         <div className="flex items-center gap-3 sm:gap-4">
@@ -59,9 +59,9 @@ function Header() {
       </div>
 
       {/* Search bar (mobile) */}
-      <div className="md:hidden px-3 pb-2">
+      {/* <div className="md:hidden px-3 pb-2">
         <SearchInput />
-      </div>
+      </div> */}
     </header>
   );
 }
