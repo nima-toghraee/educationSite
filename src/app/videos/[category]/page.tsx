@@ -32,6 +32,10 @@ export default function CategoryVideos() {
   const apiCategory = getApiCategory(categorySlug);
 
   useEffect(() => {
+    console.log("📌 Category slug:", categorySlug);
+    console.log("📌 API category:", apiCategory);
+    console.log("📌 API URL env:", process.env.NEXT_PUBLIC_API_URL);
+
     if (!categorySlug || !apiCategory) {
       console.error("!!! ERROR: Category parameter is missing or invalid !!!");
       setLoading(false);
@@ -43,6 +47,8 @@ export default function CategoryVideos() {
 
       // ارسال مقدار فارسی به API
       const filtered: Course[] = await fetchCoursesByCategory(apiCategory);
+      console.log("📌 Courses received:", filtered);
+
       setCourses(filtered);
 
       if (filtered.length === 0) {
