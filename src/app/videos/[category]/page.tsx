@@ -15,7 +15,11 @@ const categoryMap: Record<string, string> = {
 
 export default function CategoryVideos() {
   const params = useParams();
-  const categorySlug = params?.category; // مقدار انگلیسی از URL
+  const rawCategory = params?.category;
+
+  const categorySlug = Array.isArray(rawCategory)
+    ? rawCategory[0]
+    : rawCategory;
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
