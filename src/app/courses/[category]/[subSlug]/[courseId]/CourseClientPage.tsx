@@ -31,7 +31,7 @@ async function getCourseData(
   courseId: string
 ): Promise<{ course: Course; lessons: Lesson[] }> {
   const courseRes = await fetch(
-    `http://localhost:5000/api/courses/${courseId}`,
+    `https://backend-education-x5ta.onrender.com/api/courses/${courseId}`,
     {
       cache: "no-store",
     }
@@ -39,7 +39,7 @@ async function getCourseData(
   const course = await courseRes.json();
 
   const lessonsRes = await fetch(
-    `http://localhost:5000/api/lessons/by-course/${courseId}`,
+    `https://backend-education-x5ta.onrender.com/api/lessons/by-course/${courseId}`,
     { cache: "no-store" }
   );
   const lessons = await lessonsRes.json();
@@ -55,7 +55,7 @@ async function checkCourseAccess(
   if (!token) return { is_purchased: false, locked: true };
 
   const res = await fetch(
-    `http://localhost:5000/api/courses/${courseId}/check-access`,
+    `https://backend-education-x5ta.onrender.com/api/courses/${courseId}/check-access`,
     {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",

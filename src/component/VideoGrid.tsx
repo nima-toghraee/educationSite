@@ -22,7 +22,7 @@ export default function VideoGrid() {
     async function fetchVideos() {
       try {
         const res = await fetch(
-          "http://localhost:5000/api/courses/latest?limit=3"
+          "https://backend-education-x5ta.onrender.com/api/courses/latest?limit=3"
         );
         const json = await res.json();
         const data: Video[] = Array.isArray(json) ? json : json.data || [];
@@ -73,7 +73,7 @@ export default function VideoGrid() {
                       {video.thumbnail && video.thumbnail.startsWith("/") && (
                         <div className="relative w-full h-48">
                           <Image
-                            src={`http://localhost:5000${video.thumbnail}`}
+                            src={`https://backend-education-x5ta.onrender.com${video.thumbnail}`}
                             alt={video.title || "ویدیو بدون عنوان"}
                             fill
                             className="object-cover group-hover:scale-105 transition-transform duration-300"

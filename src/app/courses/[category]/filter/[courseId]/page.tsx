@@ -52,7 +52,7 @@ export default function FilteredCoursePage() {
       try {
         // دریافت اطلاعات دوره
         const courseRes = await fetch(
-          `http://localhost:5000/api/courses/${courseId}`
+          `https://backend-education-x5ta.onrender.com/api/courses/${courseId}`
         );
         if (!courseRes.ok) throw new Error("خطا در دریافت اطلاعات دوره");
         const courseData: Course = await courseRes.json();
@@ -60,7 +60,7 @@ export default function FilteredCoursePage() {
 
         // دریافت درس‌ها
         const lessonsRes = await fetch(
-          `http://localhost:5000/api/lessons/by-course/${courseId}`
+          `https://backend-education-x5ta.onrender.com/api/lessons/by-course/${courseId}`
         );
         if (!lessonsRes.ok) throw new Error("خطا در دریافت درس‌ها");
         const lessonsData: Lesson[] = await lessonsRes.json();
@@ -72,7 +72,7 @@ export default function FilteredCoursePage() {
           for (const lesson of lessonsData) {
             if (token) {
               const accessRes = await fetch(
-                `http://localhost:5000/api/courses/${courseId}/check-access`,
+                `https://backend-education-x5ta.onrender.com/api/courses/${courseId}/check-access`,
                 { headers: { Authorization: `Bearer ${token}` } }
               );
               if (accessRes.ok) {

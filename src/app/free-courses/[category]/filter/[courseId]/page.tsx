@@ -42,7 +42,7 @@ export default function FilteredCoursePage() {
       setErrorCourse("");
       try {
         const res = await fetch(
-          `http://localhost:5000/api/courses/${courseId}`
+          `https://backend-education-x5ta.onrender.com/api/courses/${courseId}`
         );
         if (!res.ok) throw new Error("خطا در دریافت اطلاعات دوره");
 
@@ -68,7 +68,7 @@ export default function FilteredCoursePage() {
       setErrorLessons("");
       try {
         const res = await fetch(
-          `http://localhost:5000/api/lessons/by-course/${courseId}`
+          `https://backend-education-x5ta.onrender.com/api/lessons/by-course/${courseId}`
         );
         if (!res.ok) throw new Error("خطا در دریافت درس‌ها");
 

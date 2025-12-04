@@ -56,7 +56,7 @@ export default function SubCategoryPage() {
         }
 
         const res = await fetch(
-          `http://localhost:5000/api/courses/by-category/${targetSub.id}`
+          `https://backend-education-x5ta.onrender.com/api/courses/by-category/${targetSub.id}`
         );
 
         if (!res.ok) throw new Error("خطا در دریافت اطلاعات از سرور");

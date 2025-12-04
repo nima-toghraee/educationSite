@@ -39,7 +39,7 @@ export default function FilteredCoursesPage() {
         if (!categoryId) throw new Error("دسته‌بندی نامعتبر است");
 
         const res = await fetch(
-          `http://localhost:5000/api/courses/by-category/${categoryId}?grade=${encodeURIComponent(
+          `https://backend-education-x5ta.onrender.com/api/courses/by-category/${categoryId}?grade=${encodeURIComponent(
             base
           )}&field=${encodeURIComponent(field)}`
         );

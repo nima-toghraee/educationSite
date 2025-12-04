@@ -20,7 +20,9 @@ export default function FreeVideoCarousel() {
   useEffect(() => {
     async function fetchVideos() {
       try {
-        const res = await fetch("http://localhost:5000/api/courses/free/top");
+        const res = await fetch(
+          "https://backend-education-x5ta.onrender.com/api/courses/free/top"
+        );
         const json = await res.json();
 
         type VideoResponse = {

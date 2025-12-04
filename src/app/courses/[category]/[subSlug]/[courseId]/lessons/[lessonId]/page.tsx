@@ -25,7 +25,7 @@ export default function LessonPage() {
         setError(null);
 
         const res = await fetch(
-          `http://localhost:5000/api/lessons/${lessonId}`
+          `https://backend-education-x5ta.onrender.com/api/lessons/${lessonId}`
         );
         if (!res.ok) throw new Error("خطا در دریافت اطلاعات درس");
 
