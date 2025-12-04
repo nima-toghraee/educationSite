@@ -3,12 +3,15 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { slugify } from "@/lib/slugify";
 
 type Video = {
   id: string;
   category: string;
+  sub_category?: string;
   title: string;
-  thumbnail: string;
+  thumbnail: string | null;
 };
 
 export default function VideoGrid() {
@@ -19,13 +22,10 @@ export default function VideoGrid() {
     async function fetchVideos() {
       try {
         const res = await fetch(
-          "https://backend-education-x5ta.onrender.com/api/courses/latest?limit=3"
+          "http://localhost:5000/api/courses/latest?limit=3"
         );
         const json = await res.json();
-
-        // اطمینان از اینکه داده آرایه است
         const data: Video[] = Array.isArray(json) ? json : json.data || [];
-
         setVideos(data);
       } catch (err) {
         console.error("خطا در دریافت ویدیوها:", err);
@@ -52,28 +52,47 @@ export default function VideoGrid() {
                   className="bg-gray-200 animate-pulse rounded-2xl h-48"
                 />
               ))
-            : videos.map((video) => (
-                <Link
-                  key={video.id}
-                  href={`/videos/${video.category}/${video.id}`}
-                  className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow group"
-                >
-                  <div className="relative w-full h-48">
-                    <Image
-                      src={video.thumbnail}
-                      alt={video.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  </div>
+            : videos.map((video, idx) => {
+                const href =
+                  video.category === "mind-skills"
+                    ? `/courses/${slugify(video.category)}/${slugify(
+                        video.sub_category || ""
+                      )}/${video.id}`
+                    : `/courses/${slugify(video.category)}/filter/${video.id}`;
 
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold line-clamp-2 group-hover:text-green-700 transition-colors">
-                      {video.title}
-                    </h3>
-                  </div>
-                </Link>
-              ))}
+                return (
+                  <motion.div
+                    key={video.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: idx * 0.05 }}
+                    whileHover={{ scale: 1.03 }}
+                    className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer"
+                  >
+                    <Link href={href} className="block">
+                      {video.thumbnail && video.thumbnail.startsWith("/") && (
+                        <div className="relative w-full h-48">
+                          <Image
+                            src={`http://localhost:5000${video.thumbnail}`}
+                            alt={video.title || "ویدیو بدون عنوان"}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                      )}
+
+                      <div className="p-4">
+                        <h3 className="text-lg font-semibold line-clamp-2 hover:text-green-700 transition-colors">
+                          {video.title}
+                        </h3>
+                        <p className="text-sm text-gray-500 mt-1">
+                          دسته‌بندی: {video.category}
+                        </p>
+                      </div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
         </div>
       </div>
     </section>

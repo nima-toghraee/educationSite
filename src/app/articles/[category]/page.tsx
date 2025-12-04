@@ -1,77 +1,88 @@
 "use client";
 
-import ArticleGrid from "@/component/ArticleGrid";
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { getArticlesByCategory } from "@/lib/articles";
 
 interface Article {
   id: number;
   title: string;
   summary: string;
-  category: string;
-  thumbnail: string;
+  image?: string; // URL عکس مقاله
 }
 
-// mapping از URL انگلیسی به نام فارسی دسته‌بندی
-const categoryMap: Record<string, string> = {
-  math: "ریاضی",
-  physics: "فیزیک",
-  mindset: "توانمندی ذهن",
-};
-
-export default function ArticlesCategoryPage() {
-  const params = useParams();
-  const category = params?.category;
-
+export default function CategoryPage() {
+  const { category } = useParams(); // slug دسته
   const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  const categoryInDb = categoryMap[category as string] || category; // نام دسته‌بندی برای API
+  // اطمینان از اینکه category یک رشته است
+  const categorySlug = Array.isArray(category) ? category[0] : category;
 
   useEffect(() => {
-    if (!category) return;
+    if (categorySlug) {
+      getArticlesByCategory(categorySlug)
+        .then((data) => {
+          console.log("Articles fetched:", data);
+          setArticles(data);
+        })
+        .catch((err) => {
+          console.error("Error fetching articles:", err);
+        });
+    }
+  }, [categorySlug]);
 
-    setLoading(true);
-    setError(null);
+  // mapping نام فارسی دسته
+  const categoryNameMap: Record<string, string> = {
+    math: "ریاضی",
+    physics: "فیزیک",
+    "mind-skills": "توانمندی ذهن",
+    // بقیه دسته‌ها
+  };
 
-    const fetchArticles = async () => {
-      try {
-        const res = await fetch(
-          `https://backend-education-x5ta.onrender.com/api/articles?category=${encodeURIComponent(
-            categoryInDb as string
-          )}`
-        );
-        if (!res.ok) throw new Error("خطا در دریافت داده‌ها");
-        const data: Article[] = await res.json();
-        setArticles(data);
-      } catch (err: unknown) {
-        console.error(err);
-        if (err instanceof Error) setError(err.message);
-        else setError("مشکلی در بارگذاری مقالات رخ داد.");
-        setArticles([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchArticles();
-  }, [category, categoryInDb]);
+  const categoryName = categoryNameMap[categorySlug || ""] || categorySlug;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10">
-      <h1 className="text-2xl font-bold mb-6">
-        مقالات {categoryMap[category as string] || category}
+    <div className="px-6 py-8 max-w-7xl mx-auto">
+      {/* عنوان دسته وسط صفحه */}
+      <h1 className="text-3xl font-bold text-center mb-8">
+        مقالات {categoryName}
       </h1>
 
-      {loading && <p>در حال بارگذاری...</p>}
-      {error && <p className="text-red-600">{error}</p>}
-      {!loading && !error && articles.length === 0 && (
-        <p>هیچ مقاله‌ای در این دسته‌بندی یافت نشد.</p>
-      )}
+      {/* لیست مقالات */}
+      {articles.length === 0 ? (
+        <p className="text-center text-gray-500">هیچ مقاله‌ای پیدا نشد.</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {articles.map((a) => (
+            <div
+              key={a.id}
+              onClick={() => router.push(`/articles/${categorySlug}/${a.id}`)}
+              className="cursor-pointer bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow overflow-hidden"
+            >
+              {/* عکس مقاله */}
+              {a.image ? (
+                <img
+                  src={a.image}
+                  alt={a.title}
+                  className="w-full h-40 object-cover"
+                />
+              ) : (
+                <div className="w-full h-40 bg-gray-200 flex items-center justify-center text-gray-400">
+                  بدون تصویر
+                </div>
+              )}
 
-      {!loading && !error && articles.length > 0 && (
-        <ArticleGrid articles={articles} loading={loading} />
+              {/* متن کارت */}
+              <div className="p-4">
+                <h2 className="font-semibold text-lg mb-2">{a.title}</h2>
+                <p className="text-gray-600 text-sm line-clamp-3">
+                  {a.summary}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

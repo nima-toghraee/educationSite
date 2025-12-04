@@ -11,8 +11,10 @@ export default function CommentsSection({ videoId }: Props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("Fetching comments for:", videoId);
     const fetch = async () => {
       const data = await getComments(videoId);
+      console.log("Fetched comments:", data);
       setComments(data);
       setLoading(false);
     };

@@ -1,10 +1,15 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import CarouselControls from "./CarouselControls";
 import CarouselTrack from "./CarouselTrack";
 
-type Video = { id: string; title: string; thumbnail: string };
+type Video = {
+  id: string;
+  title: string;
+  thumbnail: string;
+  category: string;
+  sub_category?: string;
+};
 
 export default function FreeVideoCarousel() {
   const [videos, setVideos] = useState<Video[]>([]);
@@ -15,20 +20,32 @@ export default function FreeVideoCarousel() {
   useEffect(() => {
     async function fetchVideos() {
       try {
-        const res = await fetch(
-          "https://backend-education-x5ta.onrender.com/api/courses/free/top"
-        );
+        const res = await fetch("http://localhost:5000/api/courses/free/top");
         const json = await res.json();
 
-        // بررسی اینکه json آرایه هست یا داخل data هست
-        const data: Video[] = Array.isArray(json) ? json : json.data || [];
+        type VideoResponse = {
+          id: string;
+          title: string;
+          thumbnail: string;
+          category: string;
+          sub_category?: string;
+          subCategory?: string;
+        };
+
+        const data: Video[] = (
+          Array.isArray(json) ? json : json.data || []
+        ).map((v: VideoResponse) => ({
+          id: v.id,
+          title: v.title,
+          thumbnail: v.thumbnail,
+          category: v.category,
+          sub_category: v.sub_category || v.subCategory || "",
+        }));
 
         const topVideos = data.slice(0, 5);
         setVideos(topVideos);
 
-        if (topVideos.length > 0) {
-          startAutoPlay(topVideos.length);
-        }
+        if (topVideos.length > 0) startAutoPlay(topVideos.length);
       } catch (error) {
         console.error("خطا در دریافت ویدیوها:", error);
       } finally {
@@ -68,7 +85,6 @@ export default function FreeVideoCarousel() {
         </h2>
 
         <div className="relative flex items-center justify-center">
-          {/* دکمه قبلی */}
           <div className="absolute right-0 z-10">
             <button
               onClick={() => {
@@ -82,7 +98,6 @@ export default function FreeVideoCarousel() {
             </button>
           </div>
 
-          {/* کورس */}
           <CarouselTrack
             videos={videos}
             active={active}
@@ -90,7 +105,6 @@ export default function FreeVideoCarousel() {
             getIndex={getIndex}
           />
 
-          {/* دکمه بعدی */}
           <div className="absolute left-0 z-10">
             <button
               onClick={() => {

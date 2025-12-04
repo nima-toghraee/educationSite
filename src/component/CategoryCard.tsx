@@ -3,96 +3,81 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-
-interface Course {
-  id: number;
-  category: string;
-  title: string;
-}
-
-// نگاشت دسته‌بندی انگلیسی ↔ فارسی
-const categoryMap: Record<string, string> = {
-  math: "ریاضی",
-  physics: "فیزیک",
-  mindset: "توانمندی ذهن",
-};
+import { getMainCategories } from "@/lib/categories";
+import { slugify } from "@/lib/slugify";
 
 interface Category {
-  slug: string; // انگلیسی برای URL
-  name: string; // فارسی برای نمایش
-  count: number;
+  id: number;
+  name: string;
+  course_count?: number;
 }
 
-export default function CategoryCards() {
+const colors = [
+  "bg-blue-400",
+  "bg-green-400",
+  "bg-red-400",
+  "bg-yellow-400",
+  "bg-purple-400",
+  "bg-pink-400",
+];
+
+export default function CategoryGrid() {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchCourses() {
-      try {
-        const res = await fetch(
-          "https://backend-education-x5ta.onrender.com/api/courses"
-        );
-        const json = await res.json();
-        const data: Course[] = Array.isArray(json) ? json : json.data || [];
-
-        const counts: Record<string, number> = {};
-        data.forEach((course) => {
-          // نگاشت به انگلیسی برای slug
-          const slug =
-            Object.keys(categoryMap).find(
-              (key) => categoryMap[key] === course.category
-            ) || course.category.toLowerCase();
-          counts[slug] = (counts[slug] || 0) + 1;
-        });
-
-        const cats: Category[] = Object.keys(counts).map((slug) => ({
-          slug,
-          name: categoryMap[slug] || slug, // نمایش فارسی
-          count: counts[slug],
-        }));
-
-        setCategories(cats);
-      } catch (error) {
-        console.error("Error fetching courses:", error);
-      }
-    }
-
-    fetchCourses();
+    getMainCategories()
+      .then((data: Category[]) => {
+        setCategories(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
   }, []);
 
+  if (loading)
+    return <p className="text-white text-center mt-10">در حال بارگذاری...</p>;
+  if (error) return <p className="text-red-500 text-center mt-10">{error}</p>;
+
   return (
-    <section className="container mx-auto px-4 py-10">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        دسته‌بندی ویدیوهای آموزشی 🎓
-      </h2>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {categories.map((cat, index) => (
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 p-4">
+      {categories.map((cat, idx) => {
+        const color = colors[idx % colors.length];
+        return (
           <motion.div
-            key={index}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition"
+            key={cat.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: idx * 0.05 }}
+            whileHover={{ scale: 1.05 }}
+            className="rounded-xl shadow-lg backdrop-blur-md bg-white/10 border border-white/20 cursor-pointer overflow-hidden"
           >
-            <Link href={`/videos/${cat.slug}`}>
-              <div className="flex flex-col items-center text-center space-y-3">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-full flex items-center justify-center text-3xl font-bold">
-                  {cat.name[0]}
-                </div>
-
-                <h3 className="text-lg font-semibold text-gray-800">
-                  {cat.name}
-                </h3>
-                <p className="text-sm text-gray-500">{cat.count} دوره موجود</p>
-
-                <span className="text-blue-600 text-sm mt-2 hover:underline">
-                  مشاهده ویدیوها →
-                </span>
+            <Link
+              href={`/courses/${slugify(cat.name)}`}
+              className="flex flex-col items-center justify-center p-6 gap-3"
+            >
+              <div
+                aria-label={`دسته ${cat.name}`}
+                className={`w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl ${color}`}
+              >
+                {cat.name.charAt(0)}
               </div>
+              <h3 className="text-lg font-semibold text-center text-black">
+                {cat.name}
+              </h3>
+              <span
+                className="px-2 py-1 text-xs font-medium bg-white/20 rounded-full text-black"
+                aria-label={`${cat.course_count ?? 0} دوره`}
+              >
+                {cat.course_count ?? 0} دوره
+              </span>
             </Link>
           </motion.div>
-        ))}
-      </div>
-    </section>
+        );
+      })}
+    </div>
   );
 }

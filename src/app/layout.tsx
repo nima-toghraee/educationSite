@@ -1,10 +1,10 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
-import Footer from "@/component/Footer";
-import Navbar from "@/component/navbar/Navbar";
 import HeaderClient from "@/component/HeaderClient"; // Client Component
 import localFont from "next/font/local";
+import { AuthProvider } from "@/context/AuthContext";
+import ConditionalLayout from "@/component/ConditionalHeader";
 
 const iranSans = localFont({
   src: "/fonts/Vazir-Bold.ttf",
@@ -19,16 +19,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="fa" dir="rtl" className={iranSans.variable}>
       <body className="font-iran-sans">
-        <HeaderClient />
-        <Navbar />
-        {children}
-        <Footer />
+        <AuthProvider>
+          <HeaderClient />
+          <ConditionalLayout>{children}</ConditionalLayout>
+        </AuthProvider>
       </body>
     </html>
   );

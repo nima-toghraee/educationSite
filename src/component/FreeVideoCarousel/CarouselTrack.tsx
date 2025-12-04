@@ -3,8 +3,16 @@
 import { motion, AnimatePresence } from "framer-motion";
 import VideoCard from "./VideoCard";
 
+type Video = {
+  id: string;
+  title: string;
+  thumbnail: string;
+  category: string;
+  sub_category?: string;
+};
+
 type CarouselTrackProps = {
-  videos: { id: string; title: string; thumbnail: string }[];
+  videos: Video[];
   active: number;
   isLoading: boolean;
   getIndex: (offset: number) => number;

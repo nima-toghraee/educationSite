@@ -31,7 +31,7 @@ function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div>
+          {/* <div>
             <h3 className="text-xl font-bold mb-4 text-white">لینک‌های سریع</h3>
             <ul className="space-y-2">
               <li>
@@ -64,14 +64,13 @@ function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
+          </div> */}
 
           {/* Contact & Social Media */}
           <div>
             <h3 className="text-xl font-bold mb-4 text-white">تماس با ما</h3>
             <p className="text-sm mb-4">
-              آدرس: تهران، خیابان ولیعصر
-              <br />
+              آدرس:تبریز <br />
               تلفن: 09029994349
               <br />
               ایمیل: mousavi.physics@yahoo.com
