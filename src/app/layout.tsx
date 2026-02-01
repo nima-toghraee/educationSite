@@ -1,10 +1,10 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
-import HeaderClient from "@/component/HeaderClient"; // Client Component
+import HeaderClient from "@/components/HeaderClient";
 import localFont from "next/font/local";
 import { AuthProvider } from "@/context/AuthContext";
-import ConditionalLayout from "@/component/ConditionalHeader";
+import ConditionalLayout from "@/components/ConditionalHeader";
 
 const iranSans = localFont({
   src: "/fonts/Vazir-Bold.ttf",
@@ -24,10 +24,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fa" dir="rtl" className={iranSans.variable}>
-      <body className="font-iran-sans">
+      <body className="font-iran-sans min-h-screen flex flex-col">
         <AuthProvider>
           <HeaderClient />
-          <ConditionalLayout>{children}</ConditionalLayout>
+
+          {/* Main Content */}
+          <main className="flex-1">
+            <ConditionalLayout>{children}</ConditionalLayout>
+          </main>
         </AuthProvider>
       </body>
     </html>

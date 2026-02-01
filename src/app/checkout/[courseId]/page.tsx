@@ -1,5 +1,5 @@
 import React from "react";
-import CheckoutForm from "@/component/checkout/CheckoutForm";
+import CheckoutForm from "@/components/checkout/CheckoutForm";
 
 interface PageProps {
   // 1. Change params to a Promise

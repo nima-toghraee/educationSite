@@ -1,7 +1,7 @@
-import CategoryCards from "@/component/CategoryCard";
-import FreeVideoCarousel from "@/component/FreeVideoCarousel/FreeVideoCarousel";
-import Hero from "@/component/Hero";
-import VideoGrid from "@/component/VideoGrid";
+import CategoryCards from "@/components/CategoryCard";
+import FreeVideoCarousel from "@/components/FreeVideoCarousel/FreeVideoCarousel";
+import Hero from "@/components/Hero";
+import VideoGrid from "@/components/VideoGrid";
 
 export default async function Home() {
   return (

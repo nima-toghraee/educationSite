@@ -1,17 +1,10 @@
-"use client";
+import CategoryPage from "@/components/course/CategoryPage";
+import { notFound } from "next/navigation";
 
-import { notFound, useParams } from "next/navigation";
-import { CategoryContentMap } from "@/lib/categoryContentMap";
-
-export default function DynamicCategoryPage() {
-  const { category } = useParams();
-  const categorySlug = category as string;
-
-  const ContentComponent = CategoryContentMap[categorySlug];
-
-  if (!ContentComponent) {
+export default function Page({ params }: { params: { category: string } }) {
+  if (!params.category) {
     notFound();
   }
 
-  return <ContentComponent categorySlug={categorySlug} />;
+  return <CategoryPage categorySlug={params.category} />;
 }

@@ -1,6 +1,6 @@
-import MathContentFree from "@/component/category-content-free/MathContent";
-import MindSkillsContentFree from "@/component/category-content-free/MindSkillsContent";
-import PhysicsContentFree from "@/component/category-content-free/PhysicsContent";
+import MathContentFree from "@/components/category-content-free/MathContent";
+import MindSkillsContentFree from "@/components/category-content-free/MindSkillsContent";
+import PhysicsContentFree from "@/components/category-content-free/PhysicsContent";
 
 import React from "react";
 

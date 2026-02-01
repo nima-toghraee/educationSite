@@ -3,18 +3,11 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-interface Lesson {
-  id: string;
-  title: string;
-  description?: string;
-  duration?: string;
-  video_url?: string;
-  order?: number;
-}
+import { Lesson } from "@/types/lesson";
+import { getLessonById } from "@/services/lessonsService";
 
 export default function LessonDetailPage() {
   const { lessonId } = useParams() as { lessonId: string };
-
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -22,26 +15,20 @@ export default function LessonDetailPage() {
   useEffect(() => {
     if (!lessonId) return;
 
-    const fetchLesson = async () => {
-      setLoading(true);
-      setError("");
+    const loadLesson = async () => {
       try {
-        const res = await fetch(
-          `https://backend-education-x5ta.onrender.com/api/lessons/${lessonId}`
-        );
-        if (!res.ok) throw new Error("خطا در دریافت اطلاعات درس");
-
-        const data: Lesson = await res.json();
+        setLoading(true);
+        setError("");
+        const data = await getLessonById(lessonId);
         setLesson(data);
-      } catch (err: unknown) {
-        if (err instanceof Error) setError(err.message);
-        else setError("خطا در دریافت درس");
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "خطا در دریافت درس");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchLesson();
+    loadLesson();
   }, [lessonId]);
 
   if (loading) return <p>در حال بارگذاری درس...</p>;

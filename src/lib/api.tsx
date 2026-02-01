@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: "http://localhost:5000",
+  withCredentials: true,
 });
 
 // --- Types ---
@@ -28,11 +29,14 @@ export interface AuthData {
 }
 
 export interface AuthResponse {
-  token: string;
+  success: boolean;
+  message: string;
   user: {
-    id: string;
+    id: number;
     name: string;
     email: string;
+    phone?: string;
+    role_id?: number;
   };
 }
 
@@ -43,6 +47,8 @@ export const registerUser = async (data: AuthData): Promise<AuthResponse> => {
 
 export const loginUser = async (data: AuthData): Promise<AuthResponse> => {
   const response = await api.post("/auth/login", data);
+  console.log("LOGIN RESPONSE:", response.data);
+
   return response.data;
 };
 

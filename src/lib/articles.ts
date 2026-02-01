@@ -35,7 +35,7 @@ export async function getArticlesByCategory(categorySlug: string): Promise<Artic
       return [];
     }
 
-    const res = await fetch(`https://backend-education-x5ta.onrender.com/api/articles/by-category/${categoryId}`);
+    const res = await fetch(`http://localhost:5000/api/articles/by-category/${categoryId}`);
     console.log("[DEBUG] fetch articles response status:", res.status);
 
     if (!res.ok) throw new Error("Failed to fetch articles");
@@ -54,8 +54,8 @@ async function fetchCategoryIdByName(name: string): Promise<number> {
   try {
     console.log("[DEBUG] Fetching categoryId for name:", name);
 
-    const res = await fetch("https://backend-education-x5ta.onrender.com/api/categories/main");
-    console.log("[DEBUG] fetch https://backend-education-x5ta.onrender.com/api/categories/main status:", res.status);
+    const res = await fetch("http://localhost:5000/api/categories/main");
+  
 
     if (!res.ok) throw new Error("Failed to fetch categories");
 
@@ -75,7 +75,7 @@ async function fetchCategoryIdByName(name: string): Promise<number> {
 
 export async function getArticleById(id: number): Promise<Article | null> {
   try {
-    const res = await fetch(`https://backend-education-x5ta.onrender.com/api/articles/${id}`);
+    const res = await fetch(`http://localhost:5000/api/articles/${id}`);
 
     if (!res.ok) {
       console.error("[getArticleById] Failed to fetch article, status:", res.status);
