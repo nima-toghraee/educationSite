@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import MainMenu from "./navbar/MainMenu";
 import Footer from "./Footer";
+import HeaderClient from "./HeaderClient";
 
 export default function ConditionalLayout({
   children,
@@ -16,7 +17,12 @@ export default function ConditionalLayout({
 
   return (
     <>
-      {!isDashboard && <MainMenu />}
+      {!isDashboard && (
+        <>
+          <HeaderClient />
+          <MainMenu />
+        </>
+      )}
 
       {children}
 

@@ -1,11 +1,15 @@
-import StatsCard from "./stats/StatsCard";
+import DashboardStats from "./components/DashboardStats";
+import QuickActions from "./components/QuickActions";
+import LatestActivities from "./components/LatestActivities";
 
-export default function AdminHome() {
+export default function AdminDashboardPage() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <StatsCard title="دوره‌ها" value={12} />
-      <StatsCard title="مقالات" value={34} />
-      <StatsCard title="نظرات در انتظار" value={5} />
+    <div className="p-2 bg-gray-50 min-h-screen">
+      <DashboardStats />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <QuickActions />
+      </div>
     </div>
   );
 }

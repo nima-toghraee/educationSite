@@ -35,15 +35,23 @@ export default function MenuItem({
   const [categories, setCategories] = useState<Category[]>([]);
   const menuRef = useRef<HTMLLIElement>(null);
 
+  // useEffect(() => {
+  //   if (isOpen && categories.length === 0) {
+  //     fetchMain()
+  //       .then(setCategories)
+  //       .catch((err) => console.error(`Error fetching ${title}:`, err));
+  //   }
+  // }, [isOpen]);
+
   useEffect(() => {
-    if (isOpen && categories.length === 0) {
-      fetchMain()
-        .then(setCategories)
-        .catch((err) => console.error(`Error fetching ${title}:`, err));
+    if (isOpen) {
+      fetchMain().then((data) => {
+        console.log("Data loaded:", data); // این را اضافه کنید تا در کنسول (F12) ببینید دیتا می‌آید یا نه
+        setCategories(data);
+      });
     }
   }, [isOpen]);
 
-  // بستن منو وقتی کاربر بیرون کلیک کرد
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -75,14 +83,14 @@ export default function MenuItem({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25 }}
-            className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-white/20 backdrop-blur-xl shadow-2xl rounded-xl border border-white/30 p-3 z-[9999]"
+            className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-white shadow-2xl rounded-xl border border-gray-200 p-3 z-[9999]"
           >
             {categories.map((cat) => (
               <motion.a
                 key={cat.id}
                 href={`${basePath}/${toSlug(cat.name)}`}
                 whileHover={{ scale: 1.03 }}
-                className="block px-3 py-2 rounded-md text-left hover:bg-white/20 hover:text-blue-500 transition-colors backdrop-blur-sm font-medium"
+                className="block px-3 py-2 rounded-md text-right text-gray-800 hover:bg-blue-50 hover:text-blue-600 transition-colors font-medium"
               >
                 {cat.name}
               </motion.a>

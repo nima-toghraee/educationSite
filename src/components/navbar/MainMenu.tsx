@@ -6,11 +6,16 @@ import MenuItem from "./MenuItem";
 import { getMainCategories } from "@/lib/categories";
 import { FaBars, FaTimes } from "react-icons/fa";
 
-export default function MainMenu() {
-  // فقط یکی از زیرمنوها باز باشد
-  const [openMenu, setOpenMenu] = useState<string | null>(null);
+const mockCategories = async () => {
+  return [
+    { id: 1, name: "ریاضی" },
+    { id: 2, name: "فیزیک" },
+    { id: 3, name: "توانمندی ذهن" },
+  ];
+};
 
-  // موبایل: منو باز/بسته
+export default function MainMenu() {
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleToggle = (menuName: string) => {
@@ -34,11 +39,12 @@ export default function MainMenu() {
       <ul
         className={`flex-col md:flex md:flex-row md:justify-center md:gap-8 py-3 text-gray-700 text-sm font-medium bg-white md:bg-transparent absolute md:static w-full md:w-auto left-0 md:left-auto transition-all duration-300 overflow-hidden ${
           mobileOpen ? "max-h-screen" : "max-h-0 md:max-h-full"
-        }`}
+        } overflow-visible`} // تغییر به overflow-visible در حالت دسکتاپ
       >
         <MenuItem
           title="دوره‌ها"
-          fetchMain={getMainCategories}
+          // fetchMain={getMainCategories}
+          fetchMain={mockCategories}
           basePath="/courses"
           isOpen={openMenu === "courses"}
           onToggle={() => handleToggle("courses")}

@@ -7,7 +7,6 @@ export default function AdminBreadcrumb() {
 
   return (
     <div className="mb-4 text-sm text-gray-500">
-      admin
       {segments.map((seg) => (
         <span key={seg}> / {seg}</span>
       ))}

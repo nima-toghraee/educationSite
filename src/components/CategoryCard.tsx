@@ -20,22 +20,38 @@ const colors = [
   "bg-pink-400",
 ];
 
+const mockCategories: Category[] = [
+  { id: 1, name: " فیزیک" },
+  { id: 2, name: "ریاضی" },
+  { id: 3, name: "کوچینگ ذهن" },
+];
+
 export default function CategoryGrid() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getMainCategories()
-      .then((data: Category[]) => {
-        setCategories(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setLoading(false);
-      });
+    // شبیه‌سازی درخواست async
+    const timer = setTimeout(() => {
+      setCategories(mockCategories);
+      setLoading(false);
+    }, 500); // فقط برای حس لودینگ
+
+    return () => clearTimeout(timer);
   }, []);
+
+  // useEffect(() => {
+  //   getMainCategories()
+  //     .then((data: Category[]) => {
+  //       setCategories(data);
+  //       setLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       setError(err.message);
+  //       setLoading(false);
+  //     });
+  // }, []);
 
   if (loading)
     return (

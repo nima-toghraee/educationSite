@@ -13,3 +13,4 @@ export async function getSubCategories(categoryId: number) {
   if (!res.ok) throw new Error("Failed to fetch subcategories");
   return res.json();
 }
+ 

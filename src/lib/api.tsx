@@ -41,15 +41,20 @@ export interface AuthResponse {
 }
 
 export const registerUser = async (data: AuthData): Promise<AuthResponse> => {
-  const response = await api.post("/auth/register", data);
+  const response = await api.post("/auth/register", data, {
+    withCredentials: true, // ⚠️ حتماً اینجا هم بزار
+  });
+  console.log("LOGIN RESPONSE:", response.data);
+  console.log("Set-Cookie header (browser network tab should show it)"); // can't see HTTPOnly cookies in JS
+
   return response.data;
 };
 
 export const loginUser = async (data: AuthData): Promise<AuthResponse> => {
-  const response = await api.post("/auth/login", data);
-  console.log("LOGIN RESPONSE:", response.data);
+  const response = await api.post("/auth/login", data, {
+    withCredentials: true,
+  });
 
   return response.data;
 };
-
 export default api;
