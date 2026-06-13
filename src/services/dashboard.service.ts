@@ -8,8 +8,6 @@ export async function getDashboardStats() {
 
     const cookieHeader = cookieStore.toString();
 
-    console.log("[STATS] cookies:", cookieHeader);
-
     const res = await fetch(
       `${API_URL}/admin/dashboard/stats`,
       {

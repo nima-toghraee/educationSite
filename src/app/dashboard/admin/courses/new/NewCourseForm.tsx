@@ -2,15 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import CourseForm from "../[id]/components/CourseForm";
-
-type Category = { id: number; name: string; parent_id: number | null };
+import { Category } from "@/types/course";
 
 type Props = {
   categories: Category[];
-  token: string | null;
 };
 
-export default function NewCourseForm({ categories, token }: Props) {
+export default function NewCourseForm({ categories }: Props) {
   const router = useRouter();
 
   return (
@@ -19,14 +17,14 @@ export default function NewCourseForm({ categories, token }: Props) {
 
       <CourseForm
         categories={categories}
-        token={token}
         onSubmit={async (data) => {
           try {
+            console.log("DATA:", data);
+
             const res = await fetch("http://localhost:5000/api/courses", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: token ? `Bearer ${token}` : "",
               },
               body: JSON.stringify(data),
             });

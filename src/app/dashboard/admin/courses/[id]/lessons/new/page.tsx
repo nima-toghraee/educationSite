@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import LessonForm from "./LessonForm";
-
-type Course = { id: number; title: string };
+import { Course } from "@/types/course";
+import { Lesson } from "@/types/lesson";
 
 export default function NewLessonPage() {
   const router = useRouter();
@@ -32,6 +32,7 @@ export default function NewLessonPage() {
   }, []);
 
   const handleSubmit = async (lesson: Lesson) => {
+    console.log("📦 LESSON SENT TO API:", lesson);
     try {
       const res = await fetch(`${API_URL}/lessons`, {
         method: "POST",

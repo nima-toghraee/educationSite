@@ -1,327 +1,297 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CourseFormData, courseSchema } from "./schema";
+import { Category } from "@/types/course";
 
-type Category = { id: number; name: string; parent_id: number | null };
-
-type CourseFormProps = {
+type Props = {
   categories: Category[];
-  token: string | null;
-  initialData?: any; // داده اولیه برای فرم (ویرایش)
-  onSubmit: (data: any) => Promise<void>; // تابع ارسال داده
-  submitLabel?: string; // متن دکمه
+  initialData?: Partial<CourseFormData>;
+  onSubmit: (data: CourseFormData) => Promise<void>;
+  submitLabel?: string;
 };
 
 export default function CourseForm({
   categories,
-  token,
   initialData,
   onSubmit,
-  submitLabel = "ذخیره دوره",
-}: CourseFormProps) {
-  const [parentId, setParentId] = useState<number | null>(null);
+  submitLabel = "ذخیره",
+}: Props) {
   const [subCategories, setSubCategories] = useState<Category[]>([]);
   const [loadingSub, setLoadingSub] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [mode, setMode] = useState<"upload" | "url">("upload");
 
-  const [form, setForm] = useState<any>({
-    title: "",
-    description: "",
-    thumbnail_url: "",
-    price: "",
-    is_free: false,
-    field: "ریاضی",
-    grade: "دهم",
-    category_id: "",
-    sub_category_id: "",
-    discount_percent: "",
-    is_published: false,
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<CourseFormData>({
+    resolver: zodResolver(courseSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      thumbnail_url: "",
+      price: "",
+      is_free: false,
+      field: "ریاضی",
+      grade: "دهم",
+      category_id: 0,
+      sub_category_id: 0,
+      discount_percent: "",
+      is_published: false,
+      ...initialData,
+    },
   });
 
-  // مقداردهی اولیه برای ادیت
+  const categoryId = watch("category_id");
+
   useEffect(() => {
-    if (!initialData) return;
+    if (!categoryId) return;
 
-    // 1️⃣ پر کردن فرم
-    setForm((prev: any) => ({
-      ...prev,
-      ...initialData,
-      price: initialData.price ?? "",
-      discount_percent: initialData.discount_percent ?? "",
-      category_id: initialData.category_id ?? "",
-      sub_category_id: initialData.sub_category_id ?? "",
-    }));
+    const load = async () => {
+      setLoadingSub(true);
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/categories/${categoryId}/children`,
+        );
+        const data = await res.json();
+        setSubCategories(data);
+      } finally {
+        setLoadingSub(false);
+      }
+    };
 
-    // 2️⃣ لود زیرکتگوری در حالت ادیت
-    if (initialData.category_id) {
-      const loadSubs = async () => {
-        setLoadingSub(true);
-        try {
-          const res = await fetch(
-            `http://localhost:5000/api/categories/${initialData.category_id}/children`,
-            { headers: { Authorization: token ? `Bearer ${token}` : "" } },
-          );
+    load();
+  }, [categoryId]);
 
-          if (!res.ok) throw new Error("Failed to fetch subcategories");
-
-          const data = await res.json();
-          setSubCategories(data);
-        } catch (err) {
-          console.error(err);
-          setSubCategories([]);
-        } finally {
-          setLoadingSub(false);
-        }
-      };
-
-      loadSubs();
-    }
-  }, [initialData, token]);
-
-  // تغییر فیلدها
-  const handleChange = async (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
-  ) => {
-    const { name, value, type, checked } = e.target;
-    setForm((f: any) => ({
-      ...f,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-
-    if (name === "category_id") {
-      const newParentId = Number(value);
-      setParentId(newParentId);
-      setForm((f: any) => ({ ...f, sub_category_id: 0 }));
-
-      if (newParentId) {
-        setLoadingSub(true);
-        try {
-          const res = await fetch(
-            `http://localhost:5000/api/categories/${newParentId}/children`,
-            { headers: { Authorization: token ? `Bearer ${token}` : "" } },
-          );
-          if (!res.ok) throw new Error("Failed to fetch subcategories");
-          const data = await res.json();
-          setSubCategories(data);
-        } catch (err) {
-          console.error(err);
-          setSubCategories([]);
-        } finally {
-          setLoadingSub(false);
-        }
-      } else setSubCategories([]);
-    }
-  };
-
-  // آپلود تصویر
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  // =========================
+  // Upload via presigned URL
+  // =========================
+  const handleUpload = async (file: File) => {
     setUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
 
     try {
-      const res = await fetch("http://localhost:5000/api/upload", {
+      const res = await fetch(
+        `http://localhost:5000/upload/presign?mimetype=${file.type}`,
+      );
+
+      const data = await res.json();
+      const { uploadUrl, fields, fileUrl } = data;
+
+      const formData = new FormData();
+
+      // مهم: fields از backend
+      Object.entries(fields).forEach(([key, value]) => {
+        formData.append(key, value as string);
+      });
+
+      // فایل آخر اضافه میشه
+      formData.append("file", file);
+
+      const uploadRes = await fetch(uploadUrl, {
         method: "POST",
-        headers: { Authorization: token ? `Bearer ${token}` : "" },
         body: formData,
       });
-      if (!res.ok) throw new Error("Upload failed");
-      const data = await res.json();
-      setForm((f: any) => ({ ...f, thumbnail_url: data.url }));
+
+      console.log("📡 upload status:", uploadRes.status);
+
+      setValue("thumbnail_url", fileUrl);
     } catch (err) {
-      console.error(err);
-      alert("آپلود تصویر موفق نبود");
+      console.error("❌ upload error:", err);
     } finally {
       setUploading(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await onSubmit(form);
-  };
-
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md space-y-6">
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div className="flex flex-col">
-          <label className="mb-1 text-gray-600">عنوان دوره</label>
-          <input
-            name="title"
-            placeholder="مثال: فیزیک دهم"
-            value={form.title}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
+    <form
+      onSubmit={handleSubmit((data) => {
+        console.log("🟢 react-hook-form submit:", data);
+        onSubmit(data);
+      })}
+      className="space-y-8 rounded-3xl border border-zinc-200 bg-white/80 backdrop-blur-sm p-8 shadow-[0_8px_30px_rgb(0,0,0,0.05)]"
+    >
+      {/* Header */}
+      <div>
+        <h2 className="text-2xl font-bold text-zinc-900">اطلاعات دوره</h2>
+        <p className="text-sm text-zinc-500 mt-1">مشخصات دوره را تکمیل کنید</p>
+      </div>
+
+      {/* title */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-zinc-700">عنوان دوره</label>
+
+        <input
+          {...register("title")}
+          placeholder="مثلا آموزش React پیشرفته"
+          className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 outline-none transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+        />
+
+        {errors.title?.message && (
+          <p className="text-sm text-red-500">{errors.title.message}</p>
+        )}
+      </div>
+
+      {/* description */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-zinc-700">توضیحات</label>
+
+        <textarea
+          {...register("description")}
+          rows={5}
+          placeholder="توضیحات دوره..."
+          className="w-full resize-none rounded-2xl border border-zinc-300 bg-white px-4 py-3 outline-none transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+        />
+      </div>
+
+      {/* thumbnail mode */}
+      <div className="space-y-3">
+        <label className="text-sm font-medium text-zinc-700">تصویر دوره</label>
+
+        <div className="flex w-fit rounded-2xl bg-zinc-100 p-1">
+          <button
+            type="button"
+            onClick={() => setMode("upload")}
+            className={`rounded-xl px-5 py-2 text-sm font-medium transition-all ${
+              mode === "upload"
+                ? "bg-white shadow text-zinc-900"
+                : "text-zinc-500 hover:text-zinc-800"
+            }`}
+          >
+            آپلود عکس
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setMode("url")}
+            className={`rounded-xl px-5 py-2 text-sm font-medium transition-all ${
+              mode === "url"
+                ? "bg-white shadow text-zinc-900"
+                : "text-zinc-500 hover:text-zinc-800"
+            }`}
+          >
+            URL تصویر
+          </button>
         </div>
 
-        {/* توضیحات */}
-        <div className="flex flex-col">
-          <label className="mb-1 text-gray-600">توضیحات دوره</label>
-          <textarea
-            name="description"
-            placeholder="توضیح کوتاه درباره دوره..."
-            value={form.description}
-            onChange={handleChange}
-            rows={4}
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
-
-        {/* آپلود تصویر */}
-        <div className="flex flex-col">
-          <label className="mb-1 text-gray-600">تصویر دوره</label>
-          <input
-            type="text"
-            name="thumbnail_url"
-            placeholder="لینک تصویر (اختیاری)"
-            value={form.thumbnail_url}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg p-3 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleUpload}
-            className="text-gray-600"
-          />
-          {uploading && (
-            <p className="text-sm text-gray-500 mt-1">در حال آپلود...</p>
-          )}
-          {form.thumbnail_url && (
-            <img
-              src={form.thumbnail_url}
-              alt="Thumbnail Preview"
-              className="mt-2 max-h-48 rounded-lg shadow-sm object-cover"
-            />
-          )}
-        </div>
-
-        {/* قیمت و گزینه‌ها */}
-        <div className="grid grid-cols-2 gap-4">
-          <input
-            name="price"
-            type="number"
-            placeholder="قیمت"
-            value={form.price}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-
-          <input
-            name="discount_percent"
-            type="number"
-            placeholder="درصد تخفیف"
-            value={form.discount_percent}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-        </div>
-
-        {/* چک‌باکس‌ها */}
-        <div className="flex items-center gap-6">
-          <label className="flex items-center gap-2">
+        {/* upload */}
+        {mode === "upload" && (
+          <div className="rounded-2xl border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center">
             <input
-              type="checkbox"
-              name="is_free"
-              checked={form.is_free}
-              onChange={handleChange}
-              className="accent-blue-500"
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleUpload(file);
+              }}
+              className="block w-full text-sm text-zinc-500
+          file:mr-4 file:rounded-xl file:border-0
+          file:bg-blue-600 file:px-4
+          file:py-2 file:text-white
+          hover:file:bg-blue-700"
             />
-            رایگان
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              name="is_published"
-              checked={form.is_published}
-              onChange={handleChange}
-              className="accent-blue-500"
-            />
-            انتشار
-          </label>
-        </div>
 
-        {/* فیلد و پایه تحصیلی */}
-        <div className="grid grid-cols-2 gap-4">
-          <select
-            name="field"
-            value={form.field}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            <option value="ریاضی">ریاضی</option>
-            <option value="تجربی">تجربی</option>
-            <option value="عمومی">عمومی</option>
-          </select>
-
-          <select
-            name="grade"
-            value={form.grade}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            <option value="دهم">دهم</option>
-            <option value="یازدهم">یازدهم</option>
-            <option value="دوازدهم">دوازدهم</option>
-            <option value="نامشخص">نامشخص</option>
-          </select>
-        </div>
-
-        {/* دسته‌بندی و زیرکتگوری */}
-        <div className="grid grid-cols-2 gap-4">
-          <select
-            name="category_id"
-            value={form.category_id}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
-            <option value="">انتخاب دسته‌بندی</option>
-            {categories && categories.length > 0 ? (
-              categories
-                .filter((c) => !c.parent_id)
-                .map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))
-            ) : (
-              <option disabled>دسته‌بندی موجود نیست</option>
+            {uploading && (
+              <p className="mt-3 text-sm text-blue-600">در حال آپلود...</p>
             )}
-          </select>
+          </div>
+        )}
 
-          {loadingSub ? (
-            <p className="text-gray-500">در حال بارگذاری زیرکتگوری...</p>
-          ) : subCategories.length > 0 ? (
-            <select
-              name="sub_category_id"
-              value={form.sub_category_id}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            >
-              <option value="">انتخاب زیرکتگوری</option>
-              {subCategories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          ) : null}
+        {/* url */}
+        {mode === "url" && (
+          <input
+            {...register("thumbnail_url")}
+            placeholder="https://example.com/image.jpg"
+            className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 outline-none transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+          />
+        )}
+      </div>
+
+      {/* price + category */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-zinc-700">قیمت</label>
+
+          <input
+            {...register("price")}
+            placeholder="مثلا 890000"
+            className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 outline-none transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+          />
         </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-3 rounded-lg text-lg font-medium hover:bg-blue-700 transition-colors"
+
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-zinc-700">دسته بندی</label>
+
+          <select
+            {...register("category_id", {
+              valueAsNumber: true,
+            })}
+            className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 outline-none transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+          >
+            <option value={0}>انتخاب دسته</option>
+
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* sub category */}
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-zinc-700">زیر دسته</label>
+
+        <select
+          {...register("sub_category_id", {
+            valueAsNumber: true,
+          })}
+          className="w-full rounded-2xl border border-zinc-300 bg-white px-4 py-3 outline-none transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
         >
-          {submitLabel}
-        </button>
-      </form>
-    </div>
+          <option value={0}>زیر دسته</option>
+
+          {subCategories.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* checkboxes */}
+      <div className="flex flex-wrap gap-6 rounded-2xl bg-zinc-50 p-4 border border-zinc-200">
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            {...register("is_free")}
+            className="h-5 w-5 rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
+          />
+          <span className="text-sm text-zinc-700">دوره رایگان</span>
+        </label>
+
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            {...register("is_published")}
+            className="h-5 w-5 rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
+          />
+          <span className="text-sm text-zinc-700"> نمایش در سایت</span>
+        </label>
+      </div>
+
+      {/* submit */}
+      <button
+        type="submit"
+        className="w-full rounded-2xl bg-blue-600 px-5 py-4 text-sm font-semibold text-white transition-all hover:scale-[1.01] hover:bg-blue-700 active:scale-[0.99]"
+      >
+        {submitLabel}
+      </button>
+    </form>
   );
 }

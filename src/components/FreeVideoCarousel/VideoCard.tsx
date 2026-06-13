@@ -64,7 +64,7 @@ export default function VideoCard({
             />
           ) : (
             <Image
-              src={`http://localhost:5000${video.thumbnail}`}
+              src={video.thumbnail}
               alt={video.title}
               fill
               className="object-cover transition-transform duration-500 hover:scale-110"

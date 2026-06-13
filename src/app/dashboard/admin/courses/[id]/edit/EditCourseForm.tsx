@@ -2,33 +2,21 @@
 
 import { useRouter } from "next/navigation";
 import CourseForm from "../components/CourseForm";
-import { Category } from "@/types/course";
-
-type Course = {
-  id: number;
-  title: string;
-  description?: string;
-  thumbnail_url?: string;
-  price?: number;
-  is_free?: boolean;
-  is_published?: boolean;
-  field?: string;
-  grade?: string;
-  discount_percent?: number;
-  category_id?: number;
-  sub_category_id?: number;
-};
+import { Category, Course } from "@/types/course";
 
 export default function EditCourseForm({
   course,
   categories,
-  token,
 }: {
   course: Course;
   categories: Category[];
-  token: string | null;
 }) {
   const router = useRouter();
+  const formInitialData = {
+    ...course,
+    price: course.price?.toString() ?? "",
+    discount_percent: course.discount_percent?.toString() ?? "",
+  };
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md space-y-6">
@@ -36,9 +24,10 @@ export default function EditCourseForm({
 
       <CourseForm
         categories={categories}
-        token={token}
-        initialData={course} // داده‌های اولیه فرم
+        initialData={formInitialData}
         onSubmit={async (data) => {
+          console.log("🟡 SUBMIT FIRED");
+          console.log("DATA:", data);
           try {
             const res = await fetch(
               `http://localhost:5000/api/courses/${course.id}`,
@@ -46,9 +35,9 @@ export default function EditCourseForm({
                 method: "PUT",
                 headers: {
                   "Content-Type": "application/json",
-                  Authorization: token ? `Bearer ${token}` : "",
                 },
                 body: JSON.stringify(data),
+                credentials: "include", // 👈 اگر auth با cookie هست
               },
             );
 

@@ -12,11 +12,14 @@ export type Course = {
   is_free: boolean;
   grade?: string;
   field?: string;
+  discount_percent: string,
 };
 
 export type Category = {
   id: number;
   name: string;
+  course_count: number;
+  parent_id: number | null;
 };
 
 export type Access = {

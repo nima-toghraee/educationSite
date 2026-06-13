@@ -13,7 +13,7 @@ export type Comment = {
 // گرفتن کامنت‌ها برای یک ویدیو
 export async function getComments(videoId: string | number): Promise<Comment[]> {
   try {
-    const res = await api.get(`/comments/${videoId}`);
+    const res = await api.get(`api/comments/${videoId}`);
     return res.data;
   } catch (err) {
     console.error("Error fetching comments:", err);
@@ -24,7 +24,7 @@ export async function getComments(videoId: string | number): Promise<Comment[]> 
 // ثبت کامنت جدید برای یک ویدیو
 export async function addComment(videoId: string | number, comment: Omit<Comment, "id">): Promise<Comment | null> {
   try {
-    const res = await api.post(`/comments/${videoId}`, comment); // videoId در URL
+    const res = await api.post(`api/comments/${videoId}`, comment); // videoId در URL
     return res.data;
   } catch (err) {
     console.error("Error adding comment:", err);
@@ -36,7 +36,7 @@ export async function addComment(videoId: string | number, comment: Omit<Comment
 // حذف یک کامنت (اختیاری)
 export async function deleteComment(commentId: number): Promise<boolean> {
   try {
-    await api.delete(`/comments/${commentId}`);
+    await api.delete(`api/comments/${commentId}`);
     return true;
   } catch (err) {
     console.error("Error deleting comment:", err);

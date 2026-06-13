@@ -12,11 +12,9 @@ type Lesson = {
 export default function LessonList({
   lessons,
   courseId,
-  token,
 }: {
   lessons: Lesson[];
   courseId: number;
-  token: string | null;
 }) {
   const router = useRouter();
 
@@ -25,9 +23,7 @@ export default function LessonList({
 
     const res = await fetch(`http://localhost:5000/api/lessons/${lessonId}`, {
       method: "DELETE",
-      headers: {
-        Authorization: token ? `Bearer ${token}` : "",
-      },
+      credentials: "include", // 👈 اگر auth با cookie هست
     });
 
     if (!res.ok) {

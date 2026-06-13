@@ -1,29 +1,11 @@
-import { cookies } from "next/headers";
 import Link from "next/link";
 import CourseHeader from "./components/CourseHeader";
 import LessonList from "./components/LessonList";
+import { Course } from "@/types/course";
+import { Lesson } from "@/types/lesson";
 
-type Course = {
-  id: number;
-  title: string;
-  description?: string;
-  is_published?: boolean;
-};
-
-type Lesson = {
-  id: number;
-  title: string;
-  order?: number;
-};
-
-async function getCourse(
-  id: string,
-  token: string | undefined,
-): Promise<Course> {
+async function getCourse(id: string): Promise<Course> {
   const res = await fetch(`http://localhost:5000/api/courses/${id}`, {
-    headers: {
-      Authorization: token ? `Bearer ${token}` : "",
-    },
     cache: "no-store",
   });
 
@@ -32,14 +14,8 @@ async function getCourse(
   return res.json();
 }
 
-async function getLessons(
-  id: string,
-  token: string | undefined,
-): Promise<Lesson[]> {
+async function getLessons(id: string): Promise<Lesson[]> {
   const res = await fetch(`http://localhost:5000/api/lessons/by-course/${id}`, {
-    headers: {
-      Authorization: token ? `Bearer ${token}` : "",
-    },
     cache: "no-store",
   });
 
@@ -53,24 +29,17 @@ export default async function CoursePage({
 }: {
   params: { id: string };
 }) {
-  const token = cookies().get("token")?.value;
-
   const [course, lessons] = await Promise.all([
-    getCourse(params.id, token),
-    getLessons(params.id, token),
+    getCourse(params.id),
+    getLessons(params.id),
   ]);
 
   return (
     <div className="space-y-6">
-      {/* header */}
       <CourseHeader course={course} />
 
-      {/* actions */}
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium text-gray-900">
-          {" "}
-          لیست درس های دوره
-        </h3>
+        <h3 className="text-lg font-medium text-gray-900">لیست درس های دوره</h3>
 
         <Link
           href={`/dashboard/admin/courses/${course.id}/lessons/new`}
@@ -80,12 +49,7 @@ export default async function CoursePage({
         </Link>
       </div>
 
-      {/* lesson list */}
-      <LessonList
-        lessons={lessons}
-        courseId={course.id}
-        token={token ?? null}
-      />
+      <LessonList lessons={lessons} courseId={course.id} />
     </div>
   );
 }

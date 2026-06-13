@@ -1,12 +1,26 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-
   images: {
-  domains: ['picsum.photos','example.com', 'via.placeholder.com', 'localhost'],
-}
-
-  /* config options here */
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+      },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+      },
+      {
+        protocol: "https",
+        hostname: "s3.ir-thr-at1.arvanstorage.ir",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

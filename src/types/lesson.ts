@@ -14,3 +14,4 @@ export type Lesson = {
   video_url?: string;
 
 };
+
